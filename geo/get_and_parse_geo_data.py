@@ -1,10 +1,10 @@
-from os.path import abspath
+from os.path import abspath, expanduser
 
 import GEOparse
 from pandas import concat
 
 
-def get_and_parse_geo_data(geo_id, directory_path=abspath('.')):
+def get_and_parse_geo_data(geo_id, directory_path='.'):
     """
     Get and parse GEO data.
     Arguments:
@@ -20,17 +20,14 @@ def get_and_parse_geo_data(geo_id, directory_path=abspath('.')):
             }
     """
 
+    directory_path = abspath(expanduser(directory_path))
+    print('Downloading GEO data in {} ...'.format(directory_path))
     gse = GEOparse.get_GEO(geo=geo_id, destdir=directory_path)
 
     print('Title: {}'.format(gse.get_metadata_attribute('title')))
     print('N samples: {}'.format(len(gse.get_metadata_attribute('sample_id'))))
 
     geo_dict = {}
-
-    # Load information
-    geo_dict['information_x_sample'] = gse.phenotype_data.T
-    print('information:\n\t{}'.format('\n\t'.join(geo_dict[
-        'information_x_sample'].index)))
 
     # Make ID-x-sample
     values = []
@@ -98,5 +95,10 @@ def get_and_parse_geo_data(geo_id, directory_path=abspath('.')):
 
     geo_dict['gene_x_sample'] = gene_x_sample.sort_index().sort_index(axis=1)
     print('gene_x_sample.shape: {}'.format(geo_dict['gene_x_sample'].shape))
+
+    # Make information_x_sample
+    geo_dict['information_x_sample'] = gse.phenotype_data.T
+    print('information:\n\t{}'.format('\n\t'.join(geo_dict[
+        'information_x_sample'].index)))
 
     return geo_dict
