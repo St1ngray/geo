@@ -27,4 +27,4 @@ Look at `notebook/geo.ipynb` for demonstration.
 
 ## Development
 
-If you find a bug or have any trouble with this library, please [submit an issue](https://github.com/KwatME/geo/issues) and I'll take care of it.
+If you find a bug or have any trouble, please [submit an issue](https://github.com/KwatME/geo/issues) and I'll take care of it.

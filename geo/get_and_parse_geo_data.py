@@ -77,28 +77,32 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
             print('id_to_gene_symbol:\n{}'.format(id_to_gene_symbol))
             geo_dict['id_to_gene_symbol'] = id_to_gene_symbol.to_dict()
 
+            # Make gene-x-sample
+            gene_x_sample = geo_dict['id_x_sample'].copy()
+            id_to_gene_symbol = geo_dict['id_to_gene_symbol']
+
+            gene_x_sample.index = geo_dict['id_x_sample'].index.map(
+                lambda i: id_to_gene_symbol.get(str(i), 'NO GENE NAME'))
+
+            gene_x_sample.drop('NO GENE NAME', inplace=True)
+
+            gene_x_sample.index.name = 'gene_symbol'
+
+            geo_dict['gene_x_sample'] = gene_x_sample.sort_index().sort_index(
+                axis=1)
+            print('gene_x_sample.shape: {}'.format(geo_dict['gene_x_sample']
+                                                   .shape))
+
         else:
+            geo_dict['id_to_gene_symbol'] = None
+            geo_dict['gene_x_sample'] = None
             print(
                 '\tgene_symbol is not a GPL column ({}); IDs may be already gene symbols.'.
                 format(', '.join(platform_table.columns)))
 
-    # Make gene-x-sample
-    gene_x_sample = geo_dict['id_x_sample'].copy()
-    id_to_gene_symbol = geo_dict['id_to_gene_symbol']
-
-    gene_x_sample.index = geo_dict['id_x_sample'].index.map(
-        lambda i: id_to_gene_symbol.get(str(i), 'NO GENE NAME'))
-
-    gene_x_sample.drop('NO GENE NAME', inplace=True)
-
-    gene_x_sample.index.name = 'gene_symbol'
-
-    geo_dict['gene_x_sample'] = gene_x_sample.sort_index().sort_index(axis=1)
-    print('gene_x_sample.shape: {}'.format(geo_dict['gene_x_sample'].shape))
-
-    # Make information_x_sample
-    geo_dict['information_x_sample'] = gse.phenotype_data.T
-    print('information:\n\t{}'.format('\n\t'.join(geo_dict[
-        'information_x_sample'].index)))
+        # Make information_x_sample
+        geo_dict['information_x_sample'] = gse.phenotype_data.T
+        print('information:\n\t{}'.format('\n\t'.join(geo_dict[
+            'information_x_sample'].index)))
 
     return geo_dict
