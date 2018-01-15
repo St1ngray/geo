@@ -13,10 +13,10 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
     Returns:
         dict: GEO dict
             {
-                information_x_sample: DataFrame (n_information, n_samples),
-                id_x_sample: DataFrame (n_ids, n_samples),
+                information_x_sample: DataFrame (n_information, n_sample),
+                id_x_sample: DataFrame (n_ids, n_sample),
                 id_to_gene_symbol: dict (n_ids),
-                gene_x_sample: DataFrame (n_genes, n_samples),
+                gene_x_sample: DataFrame (n_genes, n_sample),
             }
     """
 
