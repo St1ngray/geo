@@ -15,7 +15,7 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
             {
                 information_x_sample: DataFrame (n_information, n_sample, ),
                 id_x_sample: DataFrame (n_id, n_sample, ),
-                id_to_gene_symbol: dict (n_id, ),
+                id_gene_symbol: dict (n_id, ),
                 gene_x_sample: DataFrame (n_gene, n_sample, ),
             }
     """
@@ -46,7 +46,7 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
     print('id_x_sample.shape: {}'.format(geo_dict['id_x_sample'].shape))
 
     # Make ID-to-gene-symbol dict
-    id_to_gene_symbol = None
+    id_gene_symbol = None
     for platform_id, gpl in gse.gpls.items():
         print('{} ...'.format(platform_id))
 
@@ -73,16 +73,16 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
                     'oligoset_genesymbol']
 
         if 'gene_symbol' in platform_table:
-            id_to_gene_symbol = platform_table['gene_symbol'].dropna()
-            print('id_to_gene_symbol:\n{}'.format(id_to_gene_symbol))
-            geo_dict['id_to_gene_symbol'] = id_to_gene_symbol.to_dict()
+            id_gene_symbol = platform_table['gene_symbol'].dropna()
+            print('id_gene_symbol:\n{}'.format(id_gene_symbol))
+            geo_dict['id_gene_symbol'] = id_gene_symbol.to_dict()
 
             # Make gene-x-sample
             gene_x_sample = geo_dict['id_x_sample'].copy()
-            id_to_gene_symbol = geo_dict['id_to_gene_symbol']
+            id_gene_symbol = geo_dict['id_gene_symbol']
 
             gene_x_sample.index = geo_dict['id_x_sample'].index.map(
-                lambda i: id_to_gene_symbol.get(str(i), 'NO GENE NAME'))
+                lambda i: id_gene_symbol.get(str(i), 'NO GENE NAME'))
 
             gene_x_sample.drop('NO GENE NAME', inplace=True)
 
@@ -94,7 +94,7 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
                                                    .shape))
 
         else:
-            geo_dict['id_to_gene_symbol'] = None
+            geo_dict['id_gene_symbol'] = None
             geo_dict['gene_x_sample'] = None
             print(
                 '\tgene_symbol is not a GPL column ({}); IDs may be already gene symbols.'.
