@@ -60,11 +60,11 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
 
             if 'gene_assignment' in platform_table.columns:
                 gene_symbols = []
-                for a in platform_table['gene_assignment']:
+                for assignment in platform_table['gene_assignment']:
                     try:
-                        gene_symbols.append(a.split('//')[1].strip())
-                    except IndexError as e:
-                        print('{}: {}'.format(e, a))
+                        gene_symbols.append(assignment.split('//')[1].strip())
+                    except IndexError as exception:
+                        print('{}: {}'.format(exception, assignment))
                         gene_symbols.append('NO GENE NAME')
                 platform_table['gene_symbol'] = gene_symbols
 
