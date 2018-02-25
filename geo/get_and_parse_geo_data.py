@@ -29,7 +29,6 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
 
     geo_dict = {}
 
-    # Make ID-x-sample
     values = []
     for sample_id, gsm in gse.gsms.items():
         print('{} ...'.format(sample_id))
@@ -45,7 +44,6 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
         values, axis=1).sort_index().sort_index(axis=1)
     print('id_x_sample.shape: {}'.format(geo_dict['id_x_sample'].shape))
 
-    # Make ID-to-gene-symbol dict
     id_gene_symbol = None
     for platform_id, gpl in gse.gpls.items():
         print('{} ...'.format(platform_id))
@@ -56,7 +54,6 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
         platform_table.set_index('id', inplace=True)
 
         if 'gene_symbol' not in platform_table.columns:
-            # Make gene_symbol column
 
             if 'gene_assignment' in platform_table.columns:
                 gene_symbols = []
@@ -77,7 +74,6 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
             print('id_gene_symbol:\n{}'.format(id_gene_symbol))
             geo_dict['id_gene_symbol'] = id_gene_symbol.to_dict()
 
-            # Make gene-x-sample
             gene_x_sample = geo_dict['id_x_sample'].copy()
             id_gene_symbol = geo_dict['id_gene_symbol']
 
@@ -100,7 +96,6 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
                 '\tgene_symbol is not a GPL column ({}); IDs may be already gene symbols.'.
                 format(', '.join(platform_table.columns)))
 
-        # Make information_x_sample
         geo_dict['information_x_sample'] = gse.phenotype_data.T
         print('information:\n\t{}'.format('\n\t'.join(geo_dict[
             'information_x_sample'].index)))
