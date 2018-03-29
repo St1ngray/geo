@@ -13,15 +13,15 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
     Returns:
         dict: GEO dict
             {
-                information_x_sample: DataFrame (n_information, n_sample, ),
-                id_x_sample: DataFrame (n_id, n_sample, ),
-                id_gene_symbol: dict (n_id, ),
-                gene_x_sample: DataFrame (n_gene, n_sample, ),
+                information_x_sample: DataFrame (n_information, n_sample),
+                id_x_sample: DataFrame (n_id, n_sample),
+                id_gene_symbol: dict (n_id),
+                gene_x_sample: DataFrame (n_gene, n_sample)
             }
     """
 
     directory_path = abspath(expanduser(directory_path))
-    print('Downloading GEO data in {} ...'.format(directory_path))
+    print('Downloading GEO data into {} ...'.format(directory_path))
     gse = GEOparse.get_GEO(geo=geo_id, destdir=directory_path)
 
     print('Title: {}'.format(gse.get_metadata_attribute('title')))
@@ -97,7 +97,7 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
                 format(', '.join(platform_table.columns)))
 
         geo_dict['information_x_sample'] = gse.phenotype_data.T
-        print('information:\n\t{}'.format('\n\t'.join(geo_dict[
-            'information_x_sample'].index)))
+        print('information:\n\t{}'.format('\n\t'.join(
+            geo_dict['information_x_sample'].index)))
 
     return geo_dict
