@@ -5,20 +5,6 @@ from pandas import concat
 
 
 def get_and_parse_geo_data(geo_id, directory_path='.'):
-    """
-    Get and parse GEO data.
-    Arguments:
-        geo_id (str):
-        directory_path (str):
-    Returns:
-        dict: GEO dict
-            {
-                information_x_sample: DataFrame (n_information, n_sample),
-                id_x_sample: DataFrame (n_id, n_sample),
-                id_gene_symbol: dict (n_id),
-                gene_x_sample: DataFrame (n_gene, n_sample)
-            }
-    """
 
     directory_path = abspath(expanduser(directory_path))
     print('Downloading GEO data into {} ...'.format(directory_path))
