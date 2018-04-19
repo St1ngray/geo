@@ -13,11 +13,12 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
     print('Title: {}'.format(gse.get_metadata_attribute('title')))
     print('N samples: {}'.format(len(gse.get_metadata_attribute('sample_id'))))
 
-    geo_dict = dict(
-        id_x_sample=None,
-        id_gene_symbol=None,
-        gene_x_sample=None,
-        information_x_sample=None)
+    geo_dict = {
+        'id_x_sample': None,
+        'id_gene_symbol': None,
+        'gene_x_sample': None,
+        'information_x_sample': None
+    }
 
     values = []
     for sample_id, gsm in gse.gsms.items():
