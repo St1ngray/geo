@@ -13,7 +13,11 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
     print('Title: {}'.format(gse.get_metadata_attribute('title')))
     print('N samples: {}'.format(len(gse.get_metadata_attribute('sample_id'))))
 
-    geo_dict = {}
+    geo_dict = dict(
+        id_x_sample=None,
+        id_gene_symbol=None,
+        gene_x_sample=None,
+        information_x_sample=None)
 
     values = []
     for sample_id, gsm in gse.gsms.items():
@@ -22,8 +26,10 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
         sample_table = gsm.table
         sample_table.columns = sample_table.columns.str.lower().str.replace(
             ' ', '_')
+
         sample_values = sample_table.set_index('id_ref').squeeze()
         sample_values.name = sample_id
+
         values.append(sample_values)
 
     geo_dict['id_x_sample'] = concat(
@@ -64,10 +70,8 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
             id_gene_symbol = geo_dict['id_gene_symbol']
 
             gene_x_sample.index = geo_dict['id_x_sample'].index.map(
-                lambda i: id_gene_symbol.get(str(i), 'NO GENE NAME'))
-
+                lambda index: id_gene_symbol.get(str(index), 'NO GENE NAME'))
             gene_x_sample.drop('NO GENE NAME', inplace=True)
-
             gene_x_sample.index.name = 'gene_symbol'
 
             geo_dict['gene_x_sample'] = gene_x_sample.sort_index().sort_index(
@@ -76,8 +80,6 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
                                                    .shape))
 
         else:
-            geo_dict['id_gene_symbol'] = None
-            geo_dict['gene_x_sample'] = None
             print(
                 '\tgene_symbol is not a GPL column ({}); IDs may be already gene symbols.'.
                 format(', '.join(platform_table.columns)))
