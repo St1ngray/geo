@@ -7,11 +7,13 @@ from pandas import concat
 def get_and_parse_geo_data(geo_id, directory_path='.'):
 
     directory_path = abspath(expanduser(directory_path))
+
     print('Downloading GEO data into {} ...'.format(directory_path))
 
     gse = GEOparse.get_GEO(geo=geo_id, destdir=directory_path)
 
     print('Title: {}'.format(gse.get_metadata_attribute('title')))
+
     print('N samples: {}'.format(len(gse.get_metadata_attribute('sample_id'))))
 
     geo_dict = {
@@ -24,6 +26,7 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
     values = []
 
     for sample_id, gsm in gse.gsms.items():
+
         print('{} ...'.format(sample_id))
 
         sample_table = gsm.table
@@ -39,11 +42,13 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
 
     geo_dict['id_x_sample'] = concat(
         values, axis=1).sort_index().sort_index(axis=1)
+
     print('id_x_sample.shape: {}'.format(geo_dict['id_x_sample'].shape))
 
     id_gene_symbol = None
 
     for platform_id, gpl in gse.gpls.items():
+
         print('{} ...'.format(platform_id))
 
         platform_table = gpl.table
@@ -62,9 +67,11 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
                 for assignment in platform_table['gene_assignment']:
 
                     try:
+
                         gene_symbols.append(assignment.split('//')[1].strip())
 
                     except IndexError as exception:
+
                         print('{}: {}'.format(exception, assignment))
 
                         gene_symbols.append('NO GENE NAME')
@@ -79,6 +86,7 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
         if 'gene_symbol' in platform_table:
 
             id_gene_symbol = platform_table['gene_symbol'].dropna()
+
             print('id_gene_symbol:\n{}'.format(id_gene_symbol))
 
             geo_dict['id_gene_symbol'] = id_gene_symbol.to_dict()
@@ -96,15 +104,18 @@ def get_and_parse_geo_data(geo_id, directory_path='.'):
 
             geo_dict['gene_x_sample'] = gene_x_sample.sort_index().sort_index(
                 axis=1)
+
             print('gene_x_sample.shape: {}'.format(geo_dict['gene_x_sample']
                                                    .shape))
 
         else:
+
             print(
                 '\tgene_symbol is not a GPL column ({}); IDs may be already gene symbols.'.
                 format(', '.join(platform_table.columns)))
 
         geo_dict['information_x_sample'] = gse.phenotype_data.T
+
         print('information:\n\t{}'.format('\n\t'.join(
             geo_dict['information_x_sample'].index)))
 
