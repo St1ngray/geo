@@ -1,12 +1,10 @@
-from os.path import abspath, expanduser
+from os import getcwd
 
 import GEOparse
 from pandas import concat
 
 
-def get_and_parse_geo_data(geo_id, directory_path='.'):
-
-    directory_path = abspath(expanduser(directory_path))
+def get_and_parse_geo_data(geo_id, directory_path=getcwd()):
 
     print('Downloading GEO data into {} ...'.format(directory_path))
 
