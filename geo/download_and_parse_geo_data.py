@@ -96,7 +96,7 @@ def download_and_parse_geo_data(geo_id, directory_path=getcwd()):
             gene_x_sample.index = geo_dict['id_x_sample'].index.map(
                 lambda index: id_gene_symbol.get(str(index), 'NO GENE NAME'))
 
-            gene_x_sample.drop('NO GENE NAME', inplace=True)
+            gene_x_sample.drop('NO GENE NAME', inplace=True, errors='ignore')
 
             gene_x_sample.index.name = 'gene_symbol'
 
