@@ -4,7 +4,7 @@ import GEOparse
 from pandas import concat
 
 
-def get_and_parse_geo_data(geo_id, directory_path=getcwd()):
+def download_and_parse_geo_data(geo_id, directory_path=getcwd()):
 
     print('Downloading GEO data into {} ...'.format(directory_path))
 
