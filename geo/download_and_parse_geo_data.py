@@ -6,7 +6,7 @@ from pandas import concat
 
 def download_and_parse_geo_data(geo_id, directory_path=getcwd()):
 
-    print('Downloading GEO data into {} ...'.format(directory_path))
+    print('Establishing {} =(within)=> {} ...'.format(geo_id, directory_path))
 
     gse = GEOparse.get_GEO(geo=geo_id, destdir=directory_path)
 
