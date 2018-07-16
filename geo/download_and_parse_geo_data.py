@@ -4,11 +4,20 @@ import GEOparse
 from pandas import concat
 
 
-def download_and_parse_geo_data(geo_id, directory_path=getcwd()):
+def download_and_parse_geo_data(
+        geo_id,
+        directory_path=getcwd(),
+):
 
-    print('Establishing {} @ {} ...'.format(geo_id, directory_path))
+    print('Establishing {} @ {} ...'.format(
+        geo_id,
+        directory_path,
+    ))
 
-    gse = GEOparse.get_GEO(geo=geo_id, destdir=directory_path)
+    gse = GEOparse.get_GEO(
+        geo=geo_id,
+        destdir=directory_path,
+    )
 
     print('Title: {}'.format(gse.get_metadata_attribute('title')))
 
@@ -18,7 +27,7 @@ def download_and_parse_geo_data(geo_id, directory_path=getcwd()):
         'id_x_sample': None,
         'id_gene_symbol': None,
         'gene_x_sample': None,
-        'information_x_sample': None
+        'information_x_sample': None,
     }
 
     values = []
@@ -30,7 +39,9 @@ def download_and_parse_geo_data(geo_id, directory_path=getcwd()):
         sample_table = gsm.table
 
         sample_table.columns = sample_table.columns.str.lower().str.replace(
-            ' ', '_')
+            ' ',
+            '_',
+        )
 
         sample_values = sample_table.set_index('id_ref').squeeze()
 
@@ -39,7 +50,9 @@ def download_and_parse_geo_data(geo_id, directory_path=getcwd()):
         values.append(sample_values)
 
     geo_dict['id_x_sample'] = concat(
-        values, axis=1).sort_index().sort_index(axis=1)
+        values,
+        axis=1,
+    ).sort_index().sort_index(axis=1)
 
     print('id_x_sample.shape: {}'.format(geo_dict['id_x_sample'].shape))
 
@@ -52,9 +65,15 @@ def download_and_parse_geo_data(geo_id, directory_path=getcwd()):
         platform_table = gpl.table
 
         platform_table.columns = platform_table.columns.str.lower(
-        ).str.replace(' ', '_')
+        ).str.replace(
+            ' ',
+            '_',
+        )
 
-        platform_table.set_index('id', inplace=True)
+        platform_table.set_index(
+            'id',
+            inplace=True,
+        )
 
         if 'gene_symbol' not in platform_table.columns:
 
@@ -70,7 +89,10 @@ def download_and_parse_geo_data(geo_id, directory_path=getcwd()):
 
                     except IndexError as exception:
 
-                        print('{}: {}'.format(exception, assignment))
+                        print('{}: {}'.format(
+                            exception,
+                            assignment,
+                        ))
 
                         gene_symbols.append('NO GENE NAME')
 
@@ -94,9 +116,16 @@ def download_and_parse_geo_data(geo_id, directory_path=getcwd()):
             id_gene_symbol = geo_dict['id_gene_symbol']
 
             gene_x_sample.index = geo_dict['id_x_sample'].index.map(
-                lambda index: id_gene_symbol.get(str(index), 'NO GENE NAME'))
+                lambda index: id_gene_symbol.get(
+                    str(index),
+                    'NO GENE NAME',
+                ))
 
-            gene_x_sample.drop('NO GENE NAME', inplace=True, errors='ignore')
+            gene_x_sample.drop(
+                'NO GENE NAME',
+                inplace=True,
+                errors='ignore',
+            )
 
             gene_x_sample.index.name = 'gene_symbol'
 
