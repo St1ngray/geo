@@ -85,7 +85,8 @@ def download_and_parse_geo_data(
 
                     try:
 
-                        gene_symbols.append(assignment.split('//')[1].strip())
+                        gene_symbols.append(
+                            assignment.split(sep='//')[1].strip())
 
                     except IndexError as exception:
 
