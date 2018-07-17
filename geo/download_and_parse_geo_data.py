@@ -1,7 +1,7 @@
 from os import getcwd
 
 import GEOparse
-from pandas import concat
+from pandas import concat, DataFrame
 
 
 def download_and_parse_geo_data(
