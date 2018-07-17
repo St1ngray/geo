@@ -1,7 +1,7 @@
 from os import getcwd
 
 import GEOparse
-from pandas import concat, DataFrame
+from pandas import DataFrame, concat
 
 
 def download_and_parse_geo_data(
@@ -46,14 +46,14 @@ def download_and_parse_geo_data(
         sample_values = sample_table.set_index('id_ref').squeeze()
 
         sample_values.name = sample_id
-        
-        if isinstance(sample_values, DataFrame):
-            
-            new_labels=[]
-            for name in sample_values.columns:
-                new_labels.append(sample_id + ' (' + name + ')')
-            
-            sample_values.columns=new_labels
+
+        if isinstance(
+                sample_values,
+                DataFrame,
+        ):
+
+            sample_values.columns = ('{} ({})'.format(sample_id, column)
+                                     for column in sample_values.columns)
 
         values.append(sample_values)
 
@@ -111,10 +111,10 @@ def download_and_parse_geo_data(
 
                 platform_table['gene_symbol'] = platform_table[
                     'oligoset_genesymbol']
-                
+
             elif 'ilmn_gene' in platform_table.columns:
-                
-                platform_table['gene_symbol'] = platform_table['ilmn_gene']                
+
+                platform_table['gene_symbol'] = platform_table['ilmn_gene']
 
         if 'gene_symbol' in platform_table:
 
