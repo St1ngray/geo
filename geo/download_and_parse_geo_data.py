@@ -145,14 +145,14 @@ def download_and_parse_geo_data(
             geo_dict['gene_x_sample'] = gene_x_sample.sort_index().sort_index(
                 axis=1)
 
-            print('gene_x_sample.shape: {}'.format(geo_dict['gene_x_sample']
-                                                   .shape))
+            print('gene_x_sample.shape: {}'.format(
+                geo_dict['gene_x_sample'].shape))
 
         else:
 
             print(
-                '\tgene_symbol is not a GPL column ({}); IDs may be already gene symbols.'.
-                format(', '.join(platform_table.columns)))
+                '\tgene_symbol is not a GPL column ({}); IDs may be already gene symbols.'
+                .format(', '.join(platform_table.columns)))
 
         geo_dict['information_x_sample'] = gse.phenotype_data.T
 
