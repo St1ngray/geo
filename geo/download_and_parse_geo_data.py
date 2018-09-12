@@ -38,6 +38,12 @@ def download_and_parse_geo_data(
 
         sample_table = gsm.table
 
+        if sample_table.empty:
+
+            raise ValueError(
+                'Sample {} has empty table (perhaps this is a single cell experiment.)'
+                .format(gsm.name))
+
         sample_table.columns = sample_table.columns.str.lower().str.replace(
             ' ',
             '_',
