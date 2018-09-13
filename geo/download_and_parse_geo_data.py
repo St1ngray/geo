@@ -1,7 +1,7 @@
 from os import getcwd
 
 import GEOparse
-from pandas import DataFrame, concat
+from pandas import DataFrame, concat, isna
 
 
 def download_and_parse_geo_data(
@@ -21,7 +21,7 @@ def download_and_parse_geo_data(
 
     print('Title: {}'.format(gse.get_metadata_attribute('title')))
 
-    print('N samples: {}'.format(len(gse.get_metadata_attribute('sample_id'))))
+    print('N sample: {}'.format(len(gse.get_metadata_attribute('sample_id'))))
 
     geo_dict = {
         'id_x_sample': None,
@@ -97,17 +97,12 @@ def download_and_parse_geo_data(
 
                 for assignment in platform_table['gene_assignment']:
 
-                    try:
+                    if not isna(assignment) and '//' in assignment:
 
                         gene_symbols.append(
                             assignment.split(sep='//')[1].strip())
 
-                    except IndexError as exception:
-
-                        print('{}: {}'.format(
-                            exception,
-                            assignment,
-                        ))
+                    else:
 
                         gene_symbols.append('NO GENE NAME')
 
@@ -126,13 +121,18 @@ def download_and_parse_geo_data(
 
             id_gene_symbol = platform_table['gene_symbol'].dropna()
 
-            print('id_gene_symbol:\n{}'.format(id_gene_symbol))
+            id_gene_symbol.index = id_gene_symbol.index.astype(str)
 
-            geo_dict['id_gene_symbol'] = id_gene_symbol.to_dict()
+            geo_dict['id_gene_symbol'] = id_gene_symbol
+
+            print('id_gene_symbol.shape:{}'.format(id_gene_symbol.shape))
+
+            print('N valid gene_symbol: {}'.format(
+                (id_gene_symbol != 'NO GENE NAME').sum()))
 
             gene_x_sample = geo_dict['id_x_sample'].copy()
 
-            id_gene_symbol = geo_dict['id_gene_symbol']
+            id_gene_symbol = id_gene_symbol.to_dict()
 
             gene_x_sample.index = geo_dict['id_x_sample'].index.map(
                 lambda index: id_gene_symbol.get(
@@ -162,7 +162,7 @@ def download_and_parse_geo_data(
 
         geo_dict['information_x_sample'] = gse.phenotype_data.T
 
-        print('information:\n\t{}'.format('\n\t'.join(
-            geo_dict['information_x_sample'].index)))
+        print('information_x_sample.shape: {}'.format(
+            geo_dict['information_x_sample'].shape))
 
     return geo_dict
